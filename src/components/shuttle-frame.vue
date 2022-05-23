@@ -8,7 +8,7 @@
       <div v-for="(item,index) in leftList" :key="index">
         <div class="leftListItem">
           <p>
-            <input type="checkbox" name="leftCheckbox" value="item" />
+            <input type="checkbox" @change="leftCheckChange" name="leftCheckbox" value="item" />
             {{item}}
           </p>
         </div>
@@ -77,19 +77,19 @@ export default {
 
   methods: {
     // 获取左边选中的参数
-    getLeftChecked() {
+    getLeftChecked: () => {
       let leftChecked = [];
       let leftCheckbox = document.getElementsByName("leftCheckbox");
       for (let i = 0; i < leftCheckbox.length; i++) {
         if (leftCheckbox[i].checked) {
-          leftChecked.push(leftCheckbox[i].value);
+          leftChecked.push(leftCheckbox[i]);
         }
       }
       return leftChecked;
     },
 
     // 获取右边的参数
-    getRightChecked() {
+    getRightChecked: () => {
       let rightChecked = [];
       let rightCheckbox = document.getElementsByName("rightCheckbox");
       for (let i = 0; i < rightCheckbox.length; i++) {
@@ -136,19 +136,36 @@ export default {
       if (this.isChecked(leftChecked)) {
         // 设置btnMoveRight的disabled属性为false
         console.log(leftChecked);
+        // btnMoveRight.style.cursor = "not-allowed";
         btnMoveRight.disabled = false;
       } else {
         console.log("true" + leftChecked);
         // 设置btnMoveRight的disabled属性为true
-        btnMoveRight.disabled = true;
+        btnMoveRight.style.cursor = "not-allowed";
       }
     },
     // 鼠标移出btnMoveRight事件
     mouseoutMoveRight: function() {
       // 获得btnMoveRight[0]
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
+      console.log("执行了移出事件");
       // 设置btnMoveRight的disabled属性为false
-      btnMoveRight.disabled = false;
+      // btnMoveRight.disabled = false;
+      btnMoveRight.style.cursor = "allowed";
+    },
+    // 左边复选改变事件
+    leftCheckChange() {
+      // 获得向右移动按钮元素
+      let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
+      // 获得左边的参数
+      let leftChecked = this.getLeftChecked();
+      if (this.isChecked(leftChecked)) {
+        // 设置btnMoveRight的disabled属性为false
+        console.log("有参数", leftChecked);
+        btnMoveRight.style.backgroundColor = "red";
+      } else {
+        btnMoveRight.style.backgroundColor = "#ffffff";
+      }
     }
   }
 };
