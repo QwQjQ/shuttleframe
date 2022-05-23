@@ -63,10 +63,10 @@ export default {
   },
   data() {
     return {
-      // 左边参数列表
-      //   leftList: [],
+      // 左边选中的参数列表
+      leftChecked: [],
       // 右边参数列表
-      //   rightList: []
+      rightChecked: []
     };
   },
 
@@ -78,14 +78,13 @@ export default {
   methods: {
     // 获取左边选中的参数
     getLeftChecked: () => {
-      let leftChecked = [];
       let leftCheckbox = document.getElementsByName("leftCheckbox");
       for (let i = 0; i < leftCheckbox.length; i++) {
         if (leftCheckbox[i].checked) {
-          leftChecked.push(leftCheckbox[i]);
+          this.leftChecked.push(leftCheckbox[i]);
         }
       }
-      return leftChecked;
+      return;
     },
 
     // 获取右边的参数
@@ -113,14 +112,25 @@ export default {
     // 向右移动点击事件
     moveRight: function() {
       // 获取左边选中的参数
-      let leftChecked = this.getLeftChecked();
+      this.getLeftChecked();
+      // 获得btnMoveRight[0]
+      let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
       // 判断左边是否有选中的参数
-      if (leftChecked.length == 0) {
+      if (this.leftChecked.length == 0) {
         // 获得btnMoveRight[0]
-        let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
+
         // 设置btnMoveRight的disabled属性为true
         btnMoveRight.disabled = true;
         return;
+      } else {
+        this.leftList.map(item => {
+          if (item.checked) {
+            // this.rightList.push(item);
+            // this.leftList.splice(this.leftList.indexOf(item), 1);
+          }
+        });
+        // 设置btnMoveRight的disabled属性为false
+        // btnMoveRight.disabled = false;
       }
     },
     // 向左移动点击事件
@@ -129,17 +139,17 @@ export default {
     // 鼠标移入btnMoveRight事件
     mouseoverMoveRight: function() {
       // 获得左边的参数
-      let leftChecked = this.getLeftChecked();
+      this.getLeftChecked();
       // 获得btnMoveRight[0]
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
       // 判断leftChecked是否有选中的参数
-      if (this.isChecked(leftChecked)) {
+      if (this.isChecked(this.leftChecked)) {
         // 设置btnMoveRight的disabled属性为false
-        console.log(leftChecked);
+        console.log(this.leftChecked);
         // btnMoveRight.style.cursor = "not-allowed";
-        btnMoveRight.disabled = false;
+        // btnMoveRight.disabled = false;
       } else {
-        console.log("true" + leftChecked);
+        console.log("true" + this.leftChecked);
         // 设置btnMoveRight的disabled属性为true
         btnMoveRight.style.cursor = "not-allowed";
       }
@@ -158,10 +168,10 @@ export default {
       // 获得向右移动按钮元素
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
       // 获得左边的参数
-      let leftChecked = this.getLeftChecked();
-      if (this.isChecked(leftChecked)) {
+      this.leftChecked = this.getLeftChecked();
+      if (this.isChecked(this.leftChecked)) {
         // 设置btnMoveRight的disabled属性为false
-        console.log("有参数", leftChecked);
+        console.log("有参数", this.leftChecked);
         btnMoveRight.style.backgroundColor = "red";
       } else {
         btnMoveRight.style.backgroundColor = "#ffffff";
