@@ -5,10 +5,10 @@
       <div class="SearchBox">
         <input type="text" placeholder="请输入" />
       </div>
-      <div v-for="(item,index) in leftList" :key="index">
+      <div v-for="(item,index) in shuttleLeftList" :key="index">
         <div class="leftListItem">
           <p>
-            <input type="checkbox" @change="leftCheckChange" name="leftCheckbox" value="item" />
+            <input type="checkbox" @change="leftCheckChange" name="leftCheckbox" :value="item" />
             {{item}}
           </p>
         </div>
@@ -31,7 +31,7 @@
       <div class="SearchBox">
         <input type="text" placeholder="请输入" />
       </div>
-      <div v-for="(item,index) in rightList" :key="index">
+      <div v-for="(item,index) in shuttleRightList" :key="index">
         <div class="rightListItem">
           <p>
             <input type="checkbox" name="rightCheckbox" value="item" />
@@ -63,6 +63,10 @@ export default {
   },
   data() {
     return {
+      // 左边列表
+      shuttleLeftList: this.leftList,
+      // 右边列表
+      shuttleRightList: this.rightList,
       // 左边选中的参数列表
       leftChecked: [],
       // 右边参数列表
@@ -77,18 +81,22 @@ export default {
 
   methods: {
     // 获取左边选中的参数
-    getLeftChecked: () => {
+    getLeftChecked: function() {
+      this.leftChecked = [];
+      // 获取左边的复选框元素
       let leftCheckbox = document.getElementsByName("leftCheckbox");
       for (let i = 0; i < leftCheckbox.length; i++) {
         if (leftCheckbox[i].checked) {
-          this.leftChecked.push(leftCheckbox[i]);
+          console.log(leftCheckbox[i].value);
+          // 添加到左边选中的参数列表
+          this.leftChecked.push(leftCheckbox[i].value);
         }
       }
       return;
     },
 
     // 获取右边的参数
-    getRightChecked: () => {
+    getRightChecked: function() {
       let rightChecked = [];
       let rightCheckbox = document.getElementsByName("rightCheckbox");
       for (let i = 0; i < rightCheckbox.length; i++) {
@@ -115,20 +123,29 @@ export default {
       this.getLeftChecked();
       // 获得btnMoveRight[0]
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
+      console.log("this.leftChecked", this.leftChecked);
       // 判断左边是否有选中的参数
       if (this.leftChecked.length == 0) {
-        // 获得btnMoveRight[0]
-
         // 设置btnMoveRight的disabled属性为true
         btnMoveRight.disabled = true;
         return;
       } else {
-        this.leftList.map(item => {
-          if (item.checked) {
-            // this.rightList.push(item);
-            // this.leftList.splice(this.leftList.indexOf(item), 1);
+        // 获取左边的复选框元素
+        let leftCheckbox = document.getElementsByName("leftCheckbox");
+        let index = 0;
+        for (let i = 0; i < leftCheckbox.length; i++) {
+          if (leftCheckbox[i].checked) {
+            this.shuttleRightList.push(leftCheckbox[i].value);
+            if (index >= 1) {
+              this.shuttleLeftList.splice(i - index, 1);
+            } else {
+              this.shuttleLeftList.splice(i, 1);
+            }
+            index++;
           }
-        });
+        }
+
+        console.log("shuttleLeftList", this.shuttleLeftList);
         // 设置btnMoveRight的disabled属性为false
         // btnMoveRight.disabled = false;
       }
@@ -149,9 +166,9 @@ export default {
         // btnMoveRight.style.cursor = "not-allowed";
         // btnMoveRight.disabled = false;
       } else {
-        console.log("true" + this.leftChecked);
+        console.log("true" + this.leftChecked, btnMoveRight);
         // 设置btnMoveRight的disabled属性为true
-        btnMoveRight.style.cursor = "not-allowed";
+        // btnMoveRight.style.cursor = "not-allowed";
       }
     },
     // 鼠标移出btnMoveRight事件
@@ -164,11 +181,12 @@ export default {
       btnMoveRight.style.cursor = "allowed";
     },
     // 左边复选改变事件
-    leftCheckChange() {
+    leftCheckChange: function() {
+      this.getLeftChecked();
+      console.log("this.leftChecked", this.leftChecked);
       // 获得向右移动按钮元素
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
       // 获得左边的参数
-      this.leftChecked = this.getLeftChecked();
       if (this.isChecked(this.leftChecked)) {
         // 设置btnMoveRight的disabled属性为false
         console.log("有参数", this.leftChecked);
