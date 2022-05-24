@@ -8,7 +8,13 @@
       <div v-for="(item,index) in shuttleLeftList" :key="index">
         <div class="leftListItem">
           <p>
-            <input type="checkbox" @change="leftCheckChange" name="leftCheckbox" :value="item" />
+            <input
+              type="checkbox"
+              @change="leftCheckChange"
+              name="leftCheckbox"
+              :value="item"
+              :data-index="index"
+            />
             {{item}}
           </p>
         </div>
@@ -141,6 +147,7 @@ export default {
             } else {
               this.shuttleLeftList.splice(i, 1);
             }
+            leftCheckbox[i].checked = false;
             index++;
           }
         }
@@ -181,8 +188,13 @@ export default {
       btnMoveRight.style.cursor = "allowed";
     },
     // 左边复选改变事件
-    leftCheckChange: function() {
-      this.getLeftChecked();
+    leftCheckChange: function(event) {
+      let index = event.target.dataset.index;
+      if (event.target.checked) {
+        this.leftChecked.splice(index, 0, event.target.value);
+      } else {
+        this.leftChecked.splice(index, 1);
+      }
       console.log("this.leftChecked", this.leftChecked);
       // 获得向右移动按钮元素
       let btnMoveRight = document.getElementsByClassName("btnMoveRight")[0];
